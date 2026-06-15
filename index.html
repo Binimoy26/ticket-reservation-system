@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Ticket Reservation Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+
+        .form-row.three-col {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .ticket-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .ticket-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .ticket-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .ticket-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .ticket-price {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .ticket-quantity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background: #764ba2;
+        }
+
+        .quantity-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .total-amount {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .total-amount .label {
+            color: #333;
+        }
+
+        .total-amount .amount {
+            color: #667eea;
+            font-size: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            grid-column: 2;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset {
+            background: #e0e0e0;
+            color: #333;
+            grid-column: 1;
+        }
+
+        .btn-reset:hover {
+            background: #d0d0d0;
+        }
+
+        .message {
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #1976d2;
+        }
+
+        @media (max-width: 768px) {
+            .form-row,
+            .form-row.three-col {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-submit,
+            .btn-reset {
+                grid-column: 1;
+            }
+
+            .ticket-item {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎫 Ticket Reservation Form</h1>
+        <p class="subtitle">Book your tickets with ease</p>
+
+        <div id="message" class="message"></div>
+
+        <form id="reservationForm">
+            <!-- Personal Information Section -->
+            <div class="section-title">Personal Information</div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name <span class="required">*</span></label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name <span class="required">*</span></label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+            </div>
+
+            <!-- Event Details Section -->
+            <div class="section-title">Event Details</div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="eventType">Event Type <span class="required">*</span></label>
+                    <select id="eventType" name="eventType" required onchange="updateVenuesAndPrices()">
+                        <option value="">-- Select Event Type --</option>
+                        <option value="concert">Concert</option>
+                        <option value="sports">Sports</option>
+                        <option value="theater">Theater</option>
+                        <option value="conference">Conference</option>
+                        <option value="comedy">Comedy Show</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="venue">Venue <span class="required">*</span></label>
+                    <select id="venue" name="venue" required>
+                        <option value="">-- Select Venue --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="eventDate">Event Date <span class="required">*</span></label>
+                    <input type="date" id="eventDate" name="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventTime">Event Time <span class="required">*</span></label>
+                    <input type="time" id="eventTime" name="eventTime" required>
+                </div>
+            </div>
+
+            <!-- Ticket Selection Section -->
+            <div class="section-title">Select Tickets</div>
+
+            <div class="info-box">
+                ℹ️ Choose your preferred ticket categories and quantities below
+            </div>
+
+            <div class="ticket-section" id="ticketSection">
+                <!-- Tickets will be dynamically inserted here -->
+            </div>
+
+            <div class="total-amount">
+                <span class="label">Total Amount:</span>
+                <span class="amount">$<span id="totalPrice">0.00</span></span>
+            </div>
+
+            <!-- Additional Options Section -->
+            <div class="section-title">Additional Options</div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="parking" name="parking" value="parking">
+                <label for="parking">Add Parking Pass (+$10.00)</label>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="insurance" name="insurance" value="insurance">
+                <label for="insurance">Add Ticket Insurance (+$5.00)</label>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="vip" name="vip" value="vip">
+                <label for="vip">Upgrade to VIP Experience (+$25.00)</label>
+            </div>
+
+            <!-- Special Requests Section -->
+            <div class="section-title">Special Requests</div>
+
+            <div class="form-group form-row full">
+                <label for="specialRequests">Special Requests or Accessibility Needs</label>
+                <textarea id="specialRequests" name="specialRequests" placeholder="Let us know if you have any special requests..."></textarea>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="checkbox-group" style="margin-top: 25px;">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the Terms and Conditions <span class="required">*</span></label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button type="reset" class="btn-reset">Clear Form</button>
+                <button type="submit" class="btn-submit">Complete Reservation</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Sample data for events
+        const eventData = {
+            concert: {
+                venues: ['Madison Square Garden', 'The Forum', 'United Center'],
+                tickets: [
+                    { name: 'General Admission', price: 50 },
+                    { name: 'Premium', price: 100 },
+                    { name: 'VIP', price: 200 }
+                ]
+            },
+            sports: {
+                venues: ['Yankee Stadium', 'Dodger Stadium', 'Wrigley Field'],
+                tickets: [
+                    { name: 'Upper Level', price: 45 },
+                    { name: 'Lower Level', price: 85 },
+                    { name: 'Club Seating', price: 150 }
+                ]
+            },
+            theater: {
+                venues: ['Broadway Theatre', 'West End Theatre', 'Off-Broadway Stage'],
+                tickets: [
+                    { name: 'Balcony', price: 35 },
+                    { name: 'Orchestra', price: 75 },
+                    { name: 'Front Row', price: 120 }
+                ]
+            },
+            conference: {
+                venues: ['Convention Center', 'Tech Hub', 'Grand Ballroom'],
+                tickets: [
+                    { name: 'Standard Pass', price: 99 },
+                    { name: 'Premium Pass', price: 199 },
+                    { name: 'Platinum Pass', price: 399 }
+                ]
+            },
+            comedy: {
+                venues: ['Comedy Club Downtown', 'Laughs Theatre', 'Comedy Cellar'],
+                tickets: [
+                    { name: 'General Seating', price: 30 },
+                    { name: 'Reserved Seating', price: 60 },
+                    { name: 'VIP Front Row', price: 100 }
+                ]
+            }
+        };
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('reservationForm');
+            const eventDateInput = document.getElementById('eventDate');
+            
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            eventDateInput.min = today;
+
+            // Add event listeners for additional options
+            document.getElementById('parking').addEventListener('change', updateTotal);
+            document.getElementById('insurance').addEventListener('change', updateTotal);
+            document.getElementById('vip').addEventListener('change', updateTotal);
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                submitReservation();
+            });
+        });
+
+        function updateVenuesAndPrices() {
+            const eventType = document.getElementById('eventType').value;
+            const venueSelect = document.getElementById('venue');
+            const ticketSection = document.getElementById('ticketSection');
+
+            // Clear previous options
+            venueSelect.innerHTML = '<option value="">-- Select Venue --</option>';
+            ticketSection.innerHTML = '';
+
+            if (!eventType) return;
+
+            const event = eventData[eventType];
+
+            // Populate venues
+            event.venues.forEach(venue => {
+                const option = document.createElement('option');
+                option.value = venue;
+                option.textContent = venue;
+                venueSelect.appendChild(option);
+            });
+
+            // Populate ticket section
+            event.tickets.forEach((ticket, index) => {
+                const ticketItem = document.createElement('div');
+                ticketItem.className = 'ticket-item';
+                ticketItem.innerHTML = `
+                    <span class="ticket-name">${ticket.name}</span>
+                    <span class="ticket-price">$${ticket.price.toFixed(2)}</span>
+                    <div class="ticket-quantity">
+                        <button type="button" class="quantity-btn" onclick="decreaseQuantity(${index})">−</button>
+                        <input type="number" class="quantity-input ticket-qty-${index}" value="0" min="0" max="50" onchange="updateTotal()">
+                        <button type="button" class="quantity-btn" onclick="increaseQuantity(${index})">+</button>
+                    </div>
+                    <span class="ticket-subtotal">$<span id="subtotal-${index}">0.00</span></span>
+                `;
+                ticketSection.appendChild(ticketItem);
+            });
+
+            updateTotal();
+        }
+
+        function increaseQuantity(index) {
+            const input = document.querySelector(`.ticket-qty-${index}`);
+            input.value = parseInt(input.value) + 1;
+            updateTotal();
+        }
+
+        function decreaseQuantity(index) {
+            const input = document.querySelector(`.ticket-qty-${index}`);
+            if (parseInt(input.value) > 0) {
+                input.value = parseInt(input.value) - 1;
+                updateTotal();
+            }
+        }
+
+        function updateTotal() {
+            const eventType = document.getElementById('eventType').value;
+            if (!eventType) {
+                document.getElementById('totalPrice').textContent = '0.00';
+                return;
+            }
+
+            const event = eventData[eventType];
+            let total = 0;
+
+            // Calculate ticket total
+            event.tickets.forEach((ticket, index) => {
+                const qty = parseInt(document.querySelector(`.ticket-qty-${index}`).value) || 0;
+                const subtotal = ticket.price * qty;
+                document.getElementById(`subtotal-${index}`).textContent = subtotal.toFixed(2);
+                total += subtotal;
+            });
+
+            // Add additional options
+            if (document.getElementById('parking').checked) total += 10;
+            if (document.getElementById('insurance').checked) total += 5;
+            if (document.getElementById('vip').checked) total += 25;
+
+            document.getElementById('totalPrice').textContent = total.toFixed(2);
+        }
+
+        function submitReservation() {
+            const messageDiv = document.getElementById('message');
+            
+            // Validate form
+            if (!document.getElementById('reservationForm').checkValidity()) {
+                showMessage('Please fill in all required fields', 'error');
+                return;
+            }
+
+            // Validate at least one ticket is selected
+            const eventType = document.getElementById('eventType').value;
+            const event = eventData[eventType];
+            const ticketsSelected = event.tickets.some((ticket, index) => {
+                return parseInt(document.querySelector(`.ticket-qty-${index}`).value) > 0;
+            });
+
+            if (!ticketsSelected) {
+                showMessage('Please select at least one ticket', 'error');
+                return;
+            }
+
+            // Prepare reservation data
+            const reservationData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                eventType: document.getElementById('eventType').value,
+                venue: document.getElementById('venue').value,
+                eventDate: document.getElementById('eventDate').value,
+                eventTime: document.getElementById('eventTime').value,
+                totalAmount: document.getElementById('totalPrice').textContent,
+                addOns: {
+                    parking: document.getElementById('parking').checked,
+                    insurance: document.getElementById('insurance').checked,
+                    vip: document.getElementById('vip').checked
+                },
+                specialRequests: document.getElementById('specialRequests').value,
+                timestamp: new Date().toISOString()
+            };
+
+            // Log reservation data (in real application, send to server)
+            console.log('Reservation submitted:', reservationData);
+            
+            showMessage(`✓ Reservation successfully submitted! Confirmation email sent to ${reservationData.email}`, 'success');
+            
+            // Optional: Reset form after successful submission
+            setTimeout(() => {
+                document.getElementById('reservationForm').reset();
+                document.getElementById('ticketSection').innerHTML = '';
+                document.getElementById('totalPrice').textContent = '0.00';
+                messageDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // Set minimum time to 9:00 AM
+        const timeInput = document.getElementById('eventTime');
+        timeInput.min = '09:00';
+        timeInput.max = '23:00';
+    </script>
+</body>
+</html>
